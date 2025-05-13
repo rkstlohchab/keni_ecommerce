@@ -1,6 +1,6 @@
 "use client";
 import { BRANDS_QUERYResult, Category, Product } from "@/sanity.types";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Container from "./Container";
 import Title from "./Title";
 import CategoryList from "./shop/CategoryList";
@@ -29,7 +29,7 @@ const Shop = ({ categories, brands }: Props) => {
     brandParams || null
   );
   const [selectedPrice, setSelectedPrice] = useState<string | null>(null);
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     setLoading(true);
     try {
       let minPrice = 0;
@@ -60,11 +60,11 @@ const Shop = ({ categories, brands }: Props) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedCategory, selectedBrand, selectedPrice]);
 
   useEffect(() => {
     fetchProducts();
-  }, [selectedCategory, selectedBrand, selectedPrice]);
+  }, [selectedCategory, selectedBrand, selectedPrice, fetchProducts]);
   return (
     <div className="border-t">
       <Container className="mt-5">

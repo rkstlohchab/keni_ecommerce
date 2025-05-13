@@ -4,10 +4,8 @@ import React from "react";
 
 const Logo = ({
   className,
-  spanDesign,
 }: {
   className?: string;
-  spanDesign?: string;
 }) => {
   return (
     <Link href={"/"} className="inline-flex">
