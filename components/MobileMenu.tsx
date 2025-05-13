@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { AlignLeft, Logs } from "lucide-react";
 import React, { useState } from "react";
@@ -18,6 +19,7 @@ interface SerializedUser {
 
 interface MobileMenuProps {
   user: SerializedUser | null;
+  
   orders: any[];
 }
 
