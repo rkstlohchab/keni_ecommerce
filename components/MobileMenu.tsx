@@ -1,10 +1,29 @@
 "use client";
-import { AlignLeft } from "lucide-react";
+import { AlignLeft, Logs } from "lucide-react";
 import React, { useState } from "react";
 import SideMenu from "./SideMenu";
+import SearchBar from "./SearchBar";
+import FavoriteButton from "./FavoriteButton";
+import { ClerkLoaded, SignedIn, UserButton } from "@clerk/nextjs";
+import SignIn from "./SignIn";
+import Link from "next/link";
 
-const MobileMenu = () => {
+interface SerializedUser {
+  id: string;
+  firstName: string | null;
+  lastName: string | null;
+  imageUrl: string;
+  email: string;
+}
+
+interface MobileMenuProps {
+  user: SerializedUser | null;
+  orders: any[];
+}
+
+const MobileMenu = ({ user, orders }: MobileMenuProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   return (
     <>
       <button onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
@@ -14,7 +33,30 @@ const MobileMenu = () => {
         <SideMenu
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
-        />
+        >
+          {/* Changed from flex-col to flex-row and adjusted spacing */}
+          <div className="flex flex-row items-center justify-between mt-6 gap-4 px-2">
+            <SearchBar />
+            <FavoriteButton />
+            {user && (
+              <Link
+                href={"/orders"}
+                className="group relative hover:text-shop_light_green hoverEffect"
+              >
+                <Logs />
+                <span className="absolute -top-1 -right-1 bg-shop_btn_dark_green text-white h-3.5 w-3.5 rounded-full text-xs font-semibold flex items-center justify-center">
+                  {orders?.length ? orders?.length : 0}
+                </span>
+              </Link>
+            )}
+            <ClerkLoaded>
+              <SignedIn>
+                <UserButton />
+              </SignedIn>
+              {!user && <SignIn />}
+            </ClerkLoaded>
+          </div>
+        </SideMenu>
       </div>
     </>
   );

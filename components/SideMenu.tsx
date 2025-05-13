@@ -4,14 +4,14 @@ import { X } from "lucide-react";
 import { headerData } from "@/constants/data";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import SocialMedia from "./SocialMedia";
 import { useOutsideClick } from "@/hooks";
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
+  children?: React.ReactNode; // Add this line
 }
 
-const SideMenu: FC<SidebarProps> = ({ isOpen, onClose }) => {
+const SideMenu: FC<SidebarProps> = ({ isOpen, onClose, children }) => {
   const pathname = usePathname();
   const sidebarRef = useOutsideClick<HTMLDivElement>(onClose);
   return (
@@ -47,7 +47,7 @@ const SideMenu: FC<SidebarProps> = ({ isOpen, onClose }) => {
             </Link>
           ))}
         </div>
-        <SocialMedia />
+        {children} {/* Add this line */}
       </div>
     </div>
   );
