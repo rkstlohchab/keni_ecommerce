@@ -19,13 +19,13 @@ const Footer = () => {
               Discover curated furniture collections at store, blending
               style and comfort to elevate your living spaces.
             </SubText>
-            <SocialMedia
+            {/* <SocialMedia
               className="text-darkColor/60"
               iconClassName="border-darkColor/60 hover:border-shop_light_green hover:text-shop_light_green"
               tooltipClassName="bg-darkColor text-white"
-            />
+            /> */}
           </div>
-          <div>
+          {/* <div>
             <SubTitle>Quick Links</SubTitle>
             <ul className="space-y-3 mt-4">
               {quickLinksData?.map((item) => (
@@ -39,7 +39,7 @@ const Footer = () => {
                 </li>
               ))}
             </ul>
-          </div>
+          </div> */}
           <div>
             <SubTitle>Categories</SubTitle>
             <ul className="space-y-3 mt-4">
@@ -58,7 +58,7 @@ const Footer = () => {
         </div>
         <div className="py-6 border-t text-center text-sm text-gray-600">
           <div>
-            © {new Date().getFullYear()} <Logo className="text-sm" />. All
+            © {new Date().getFullYear()} <Logo className="text-sm" /> | All
             rights reserved.
           </div>
         </div>
