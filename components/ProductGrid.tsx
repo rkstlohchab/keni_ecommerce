@@ -33,7 +33,7 @@ const ProductGrid = () => {
       }
     };
     fetchData();
-  }, [selectedTab, query, params]); // Add query and params to dependency array
+  }, [selectedTab]);
 
   return (
     <Container className="flex flex-col lg:px-0 my-10">
