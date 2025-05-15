@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import Logo from "./Logo";
 import { X } from "lucide-react";
 import { headerData } from "@/constants/data";
-import Link from "next/link";
+// import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useOutsideClick } from "@/hooks";
 interface SidebarProps {

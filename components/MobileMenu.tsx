@@ -3,7 +3,7 @@
 import { AlignLeft, Logs } from "lucide-react";
 import React, { useState } from "react";
 import SideMenu from "./SideMenu";
-import SearchBar from "./SearchBar";
+// import SearchBar from "./SearchBar";
 import FavoriteButton from "./FavoriteButton";
 import { ClerkLoaded, SignedIn, UserButton } from "@clerk/nextjs";
 import SignIn from "./SignIn";
@@ -43,7 +43,6 @@ const MobileMenu = ({ user, orders }: MobileMenuProps) => {
           onLinkClick={handleLinkClick}
         >
           <div className="flex flex-row items-center justify-between mt-6 gap-4 px-2">
-            <SearchBar />
             <FavoriteButton />
             {user && (
               <div

@@ -63,8 +63,13 @@ const Header = async () => {
               {!user && <SignIn />}
             </ClerkLoaded>
           </div>
-          {/* Cart icon visible on all screen sizes */}
-          <CartIcon />
+          {/* Mobile and Desktop visible elements */}
+          <div className="flex items-center gap-5">
+            <div className="block md:hidden">
+              <SearchBar />
+            </div>
+            <CartIcon />
+          </div>
         </div>
       </Container>
     </header>
