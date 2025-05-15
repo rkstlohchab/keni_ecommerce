@@ -8,6 +8,7 @@ import FavoriteButton from "./FavoriteButton";
 import { ClerkLoaded, SignedIn, UserButton } from "@clerk/nextjs";
 import SignIn from "./SignIn";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface SerializedUser {
   id: string;
@@ -25,6 +26,12 @@ interface MobileMenuProps {
 
 const MobileMenu = ({ user, orders }: MobileMenuProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const router = useRouter();
+
+  const handleLinkClick = (href: string) => {
+    setIsSidebarOpen(false);
+    router.push(href);
+  };
 
   return (
     <>
@@ -35,21 +42,21 @@ const MobileMenu = ({ user, orders }: MobileMenuProps) => {
         <SideMenu
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
+          onLinkClick={handleLinkClick}
         >
-          {/* Changed from flex-col to flex-row and adjusted spacing */}
           <div className="flex flex-row items-center justify-between mt-6 gap-4 px-2">
             <SearchBar />
             <FavoriteButton />
             {user && (
-              <Link
-                href={"/orders"}
-                className="group relative hover:text-shop_light_green hoverEffect"
+              <div
+                onClick={() => handleLinkClick("/orders")}
+                className="group relative hover:text-shop_light_green hoverEffect cursor-pointer"
               >
                 <Logs />
                 <span className="absolute -top-1 -right-1 bg-shop_btn_dark_green text-white h-3.5 w-3.5 rounded-full text-xs font-semibold flex items-center justify-center">
                   {orders?.length ? orders?.length : 0}
                 </span>
-              </Link>
+              </div>
             )}
             <ClerkLoaded>
               <SignedIn>

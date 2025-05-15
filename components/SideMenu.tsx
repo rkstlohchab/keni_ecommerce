@@ -8,10 +8,11 @@ import { useOutsideClick } from "@/hooks";
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
-  children?: React.ReactNode; // Add this line
+  onLinkClick: (href: string) => void;
+  children?: React.ReactNode;
 }
 
-const SideMenu: FC<SidebarProps> = ({ isOpen, onClose, children }) => {
+const SideMenu: FC<SidebarProps> = ({ isOpen, onClose, onLinkClick, children }) => {
   const pathname = usePathname();
   const sidebarRef = useOutsideClick<HTMLDivElement>(onClose);
   return (
@@ -36,18 +37,18 @@ const SideMenu: FC<SidebarProps> = ({ isOpen, onClose, children }) => {
 
         <div className="flex flex-col space-y-3.5 font-semibold tracking-wide">
           {headerData?.map((item) => (
-            <Link
-              href={item?.href}
+            <div
               key={item?.title}
-              className={`hover:text-shop_light_green hoverEffect ${
+              onClick={() => onLinkClick(item?.href)}
+              className={`hover:text-shop_light_green hoverEffect cursor-pointer ${
                 pathname === item?.href && "text-white"
               }`}
             >
               {item?.title}
-            </Link>
+            </div>
           ))}
         </div>
-        {children} {/* Add this line */}
+        {children}
       </div>
     </div>
   );
