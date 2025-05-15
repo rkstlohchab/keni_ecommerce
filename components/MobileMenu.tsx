@@ -7,7 +7,6 @@ import SearchBar from "./SearchBar";
 import FavoriteButton from "./FavoriteButton";
 import { ClerkLoaded, SignedIn, UserButton } from "@clerk/nextjs";
 import SignIn from "./SignIn";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 interface SerializedUser {
@@ -20,7 +19,6 @@ interface SerializedUser {
 
 interface MobileMenuProps {
   user: SerializedUser | null;
-  
   orders: any[];
 }
 
