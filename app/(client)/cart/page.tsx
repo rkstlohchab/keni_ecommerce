@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import {
-  createCheckoutSession,
+  // createCheckoutSession,
   Metadata,
 } from "@/actions/createCheckoutSession";
 import Container from "@/components/Container";
@@ -103,6 +104,7 @@ const CartPage = () => {
         handler: function (response: any) {
           // Handle successful payment
           window.location.href = `${process.env.NEXT_PUBLIC_BASE_URL}/success?orderNumber=${metadata.orderNumber}`;
+          console.log(response);
         },
         prefill: {
           name: metadata.customerName,
@@ -168,12 +170,6 @@ const CartPage = () => {
                                   Variant:{" "}
                                   <span className="font-semibold">
                                     {product?.variant}
-                                  </span>
-                                </p>
-                                <p className="text-sm capitalize">
-                                  Status:{" "}
-                                  <span className="font-semibold">
-                                    {product?.status}
                                   </span>
                                 </p>
                               </div>
