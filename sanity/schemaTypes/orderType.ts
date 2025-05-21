@@ -13,6 +13,16 @@ export const orderType = defineType({
       type: "string",
       validation: (Rule) => Rule.required(),
     }),
+    defineField({
+      name: "razorpayOrderId",
+      title: "Razorpay Order ID",
+      type: "string",
+    }),
+    defineField({
+      name: "razorpayPaymentId",
+      title: "Razorpay Payment ID",
+      type: "string",
+    }),
     {
       name: "invoice",
       type: "object",

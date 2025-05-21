@@ -32,6 +32,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { createRazorpayOrder } from "@/actions/createRazorpayOrder";
 
 const CartPage = () => {
   const {
@@ -89,12 +90,34 @@ const CartPage = () => {
         clerkUserId: user?.id,
         address: selectedAddress,
       };
-      const checkoutUrl = await createCheckoutSession(groupedItems, metadata);
-      if (checkoutUrl) {
-        window.location.href = checkoutUrl;
-      }
+
+      const orderData = await createRazorpayOrder(groupedItems, metadata);
+
+      const options = {
+        key: orderData.key,
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: "Your Store Name",
+        description: "Payment for your order",
+        order_id: orderData.orderId,
+        handler: function (response: any) {
+          // Handle successful payment
+          window.location.href = `${process.env.NEXT_PUBLIC_BASE_URL}/success?orderNumber=${metadata.orderNumber}`;
+        },
+        prefill: {
+          name: metadata.customerName,
+          email: metadata.customerEmail,
+        },
+        theme: {
+          color: "#000000",
+        },
+      };
+
+      const razorpay = new (window as any).Razorpay(options);
+      razorpay.open();
     } catch (error) {
       console.error("Error creating checkout session:", error);
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
