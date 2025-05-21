@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Shop from "@/components/Shop";
-import { getAllBrands, getCategories } from "@/sanity/queries";
 import { Category, BRANDS_QUERYResult } from "@/sanity.types";
 import { client } from "@/sanity/lib/client";
 import { Loader2 } from "lucide-react";

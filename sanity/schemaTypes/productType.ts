@@ -64,19 +64,6 @@ export const productType = defineType({
       type: "reference",
       to: { type: "brand" },
     }),
-
-    defineField({
-      name: "status",
-      title: "Product Status",
-      type: "string",
-      options: {
-        list: [
-          { title: "New", value: "new" },
-          { title: "Hot", value: "hot" },
-          { title: "Sale", value: "sale" },
-        ],
-      },
-    }),
     defineField({
       name: "variant",
       title: "Product Type",

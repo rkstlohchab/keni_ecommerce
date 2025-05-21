@@ -38,10 +38,10 @@ const Shop = ({ categories, brands }: Props) => {
       setLoading(true);
       try {
         // Start with a basic query
-        let baseQuery = `*[_type == "product"`;
+        const baseQuery = `*[_type == "product"`;
         
         // Add filter conditions
-        let conditions = [];
+        const conditions = [];
         
         // Category filter
         if (selectedCategory) {
