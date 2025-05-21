@@ -11,17 +11,19 @@ import { client } from "@/sanity/lib/client";
 import { Loader2 } from "lucide-react";
 import NoProductAvailable from "./NoProductAvailable";
 import ProductCard from "./ProductCard";
+import { motion, AnimatePresence } from "motion/react";
 
 interface Props {
   categories: Category[];
   brands: BRANDS_QUERYResult;
 }
+
 const Shop = ({ categories, brands }: Props) => {
   const searchParams = useSearchParams();
   const brandParams = searchParams?.get("brand");
   const categoryParams = searchParams?.get("category");
   const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
     categoryParams || null
   );
@@ -29,42 +31,63 @@ const Shop = ({ categories, brands }: Props) => {
     brandParams || null
   );
   const [selectedPrice, setSelectedPrice] = useState<string | null>(null);
-  const fetchProducts = async () => {
-    setLoading(true);
-    try {
-      let minPrice = 0;
-      let maxPrice = 10000;
-      if (selectedPrice) {
-        const [min, max] = selectedPrice.split("-").map(Number);
-        minPrice = min;
-        maxPrice = max;
-      }
-      const query = `
-      *[_type == 'product' 
-        && (!defined($selectedCategory) || references(*[_type == "category" && slug.current == $selectedCategory]._id))
-        && (!defined($selectedBrand) || references(*[_type == "brand" && slug.current == $selectedBrand]._id))
-        && price >= $minPrice && price <= $maxPrice
-      ] 
-      | order(name asc) {
-        ...,"categories": categories[]->title
-      }
-    `;
-      const data = await client.fetch(
-        query,
-        { selectedCategory, selectedBrand, minPrice, maxPrice },
-        { next: { revalidate: 0 } }
-      );
-      setProducts(data);
-    } catch (error) {
-      console.log("Shop product fetching Error", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
+    // Using the same approach as the working ProductGrid component
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        // Start with a basic query
+        let baseQuery = `*[_type == "product"`;
+        
+        // Add filter conditions
+        let conditions = [];
+        
+        // Category filter
+        if (selectedCategory) {
+          conditions.push(`count(categories[]->[slug.current=="${selectedCategory}"]) > 0`);
+        }
+        
+        // Brand filter
+        if (selectedBrand) {
+          conditions.push(`brand->slug.current=="${selectedBrand}"`);
+        }
+        
+        // Price filter
+        if (selectedPrice) {
+          const [min, max] = selectedPrice.split("-").map(Number);
+          const maxPrice = max === 1000 ? 10000 : max; // Handle "1000+" case
+          conditions.push(`price >= ${min} && price <= ${maxPrice}`);
+        }
+        
+        // Complete the query
+        let query = baseQuery;
+        if (conditions.length > 0) {
+          query += ` && ${conditions.join(" && ")}`;
+        }
+        query += `] | order(name asc) {
+          ...,
+          "categories": categories[]->title,
+          "brand": brand->title
+        }`;
+        
+        console.log("Executing query:", query);
+        
+        // Fetch products with a simplified approach
+        const data = await client.fetch(query);
+        console.log("Products found:", data?.length || 0);
+        setProducts(data || []);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
     fetchProducts();
   }, [selectedCategory, selectedBrand, selectedPrice]);
+
   return (
     <div className="border-t">
       <Container className="mt-5">
@@ -115,10 +138,19 @@ const Shop = ({ categories, brands }: Props) => {
                     Product is loading . . .
                   </p>
                 </div>
-              ) : products?.length > 0 ? (
+              ) : products && products.length > 0 ? (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5">
-                  {products?.map((product) => (
-                    <ProductCard key={product?._id} product={product} />
+                  {products.map((product) => (
+                    <AnimatePresence key={product._id}>
+                      <motion.div
+                        layout
+                        initial={{ opacity: 0.2 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                      >
+                        <ProductCard key={product._id} product={product} />
+                      </motion.div>
+                    </AnimatePresence>
                   ))}
                 </div>
               ) : (

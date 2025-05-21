@@ -12,8 +12,10 @@ const LATEST_BLOG_QUERY = defineQuery(
 );
 
 const DEAL_PRODUCTS = defineQuery(
-  `*[_type == 'product' && status == 'hot'] | order(name asc){
-    ...,"categories": categories[]->title
+  `*[_type == 'product' && (status == 'hot' || status == 'sale')] | order(name asc){
+    ...,
+    "categories": categories[]->title,
+    "brand": brand->title
   }`
 );
 
@@ -21,30 +23,40 @@ const PRODUCT_BY_SLUG_QUERY = defineQuery(
   `*[_type == "product" && slug.current == $slug] | order(name asc) [0]`
 );
 
-const BRAND_QUERY = defineQuery(`*[_type == "product" && slug.current == $slug]{
-  "brandName": brand->title
-  }`);
-
-const MY_ORDERS_QUERY =
-  defineQuery(`*[_type == 'order' && clerkUserId == $userId] | order(orderData desc){
-...,products[]{
-  ...,product->
-}
+const BRAND_QUERY = defineQuery(`*[_type == "product" && references(*[_type == "brand" && slug.current == $slug]._id)] | order(name asc) {
+  ...,
+  "brand": brand->{
+    title,
+    slug,
+    image
+  },
+  "categories": categories[]->title
 }`);
+
+const MY_ORDERS_QUERY = defineQuery(`*[_type == 'order' && clerkUserId == $userId] | order(orderData desc){
+  ...,
+  products[]{
+    ...,
+    product->{
+      ...,
+      "categories": categories[]->title,
+      "brand": brand->title
+    }
+  }
+}`);
+
 const GET_ALL_BLOG = defineQuery(
   `*[_type == 'blog'] | order(publishedAt desc)[0...$quantity]{
-  ...,  
-     blogcategories[]->{
-    title
-}
+    ...,  
+    blogcategories[]->{
+      title
     }
-  `
+  }`
 );
 
-const SINGLE_BLOG_QUERY =
-  defineQuery(`*[_type == "blog" && slug.current == $slug][0]{
+const SINGLE_BLOG_QUERY = defineQuery(`*[_type == "blog" && slug.current == $slug][0]{
   ..., 
-    author->{
+  author->{
     name,
     image,
   },
@@ -56,8 +68,8 @@ const SINGLE_BLOG_QUERY =
 
 const BLOG_CATEGORIES = defineQuery(
   `*[_type == "blog"]{
-     blogcategories[]->{
-    ...
+    blogcategories[]->{
+      ...
     }
   }`
 );
@@ -67,7 +79,7 @@ const OTHERS_BLOG_QUERY = defineQuery(`*[
   && defined(slug.current)
   && slug.current != $slug
 ]|order(publishedAt desc)[0...$quantity]{
-...
+  ...,
   publishedAt,
   title,
   mainImage,
@@ -81,6 +93,7 @@ const OTHERS_BLOG_QUERY = defineQuery(`*[
     "slug": slug.current,
   }
 }`);
+
 export {
   BRANDS_QUERY,
   LATEST_BLOG_QUERY,
